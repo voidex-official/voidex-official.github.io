@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Anmeldung – VØIDΞX Jarvis</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header><div class="logo">VØIDΞX JARVIS</div></header>
+  <h1>TikTok-Anmeldung</h1>
+  <p class="sub" id="msg">Weiterleitung an Jarvis auf deinem PC …</p>
+  <div class="card"><p>Diese Seite gibt die Antwort von TikTok nur an das lokale Jarvis-Programm auf deinem eigenen PC weiter (127.0.0.1). Sie speichert und sendet nichts an andere Server.</p>
+  <p>This page only forwards TikTok's response to the local Jarvis app on the owner's own PC (127.0.0.1). It stores nothing and sends nothing to other servers.</p></div>
+</main>
+<script>
+  // Nur code/state/error weiterreichen – an den lokalen Jarvis-Core
+  (function () {
+    var q = new URLSearchParams(location.search), out = new URLSearchParams();
+    ['code', 'state', 'error', 'error_description', 'scopes'].forEach(function (k) { if (q.has(k)) out.set(k, q.get(k)); });
+    if (!out.has('code') && !out.has('error')) { document.getElementById('msg').textContent = 'Keine Anmeldedaten erhalten.'; return; }
+    location.replace('http://127.0.0.1:61920/tiktok/callback?' + out.toString());
+  })();
+</script>
+</body>
+</html>
