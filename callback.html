@@ -10,18 +10,21 @@
 <body>
 <main>
   <header><div class="logo">VØIDΞX JARVIS</div></header>
-  <h1>TikTok-Anmeldung</h1>
+  <h1 id="h">TikTok-/Instagram-Anmeldung</h1>
   <p class="sub" id="msg">Weiterleitung an Jarvis auf deinem PC …</p>
-  <div class="card"><p>Diese Seite gibt die Antwort von TikTok nur an das lokale Jarvis-Programm auf deinem eigenen PC weiter (127.0.0.1). Sie speichert und sendet nichts an andere Server.</p>
-  <p>This page only forwards TikTok's response to the local Jarvis app on the owner's own PC (127.0.0.1). It stores nothing and sends nothing to other servers.</p></div>
+  <div class="card"><p>Diese Seite gibt die Antwort von TikTok bzw. Instagram nur an das lokale Jarvis-Programm auf deinem eigenen PC weiter (127.0.0.1). Sie speichert und sendet nichts an andere Server.</p>
+  <p>This page only forwards the TikTok or Instagram response to the local Jarvis app on the owner's own PC (127.0.0.1). It stores nothing and sends nothing to other servers.</p></div>
 </main>
 <script>
-  // Nur code/state/error weiterreichen – an den lokalen Jarvis-Core
+  // Nur code/state/error weiterreichen – an den lokalen Jarvis-Core. state mit „ig“ vorn = Instagram, sonst TikTok.
   (function () {
     var q = new URLSearchParams(location.search), out = new URLSearchParams();
-    ['code', 'state', 'error', 'error_description', 'scopes'].forEach(function (k) { if (q.has(k)) out.set(k, q.get(k)); });
+    ['code', 'state', 'error', 'error_reason', 'error_description', 'scopes'].forEach(function (k) { if (q.has(k)) out.set(k, q.get(k)); });
     if (!out.has('code') && !out.has('error')) { document.getElementById('msg').textContent = 'Keine Anmeldedaten erhalten.'; return; }
-    location.replace('http://127.0.0.1:61920/tiktok/callback?' + out.toString());
+    var ig = /^ig[0-9a-f]{48}$/.test(out.get('state') || '');
+    if (ig && out.has('code')) out.set('code', out.get('code').replace(/#_$/, ''));
+    document.getElementById('h').textContent = ig ? 'Instagram-Anmeldung' : 'TikTok-Anmeldung';
+    location.replace('http://127.0.0.1:61920/' + (ig ? 'instagram' : 'tiktok') + '/callback?' + out.toString());
   })();
 </script>
 </body>
